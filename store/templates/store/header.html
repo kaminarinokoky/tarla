@@ -1,0 +1,74 @@
+{% load static %}
+<header class="glass-dark text-white py-4 px-6 sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="{% static 'store/images/favicon.jpg' %}" alt="تارلا لوگو" 
+                 class="h-12 w-12 rounded-full object-cover border-2 border-white/20">
+            <h1 class="text-2xl font-bold logo-text mr-3">تارلا ارگانیک</h1>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+            <a href="{% url 'home' %}" 
+               class="nav-item {% if request.path == '/' %}active{% endif %} hover:text-accent transition-colors">
+                خانه
+            </a>
+            <a href="{% url 'products' %}" 
+               class="nav-item {% if '/products' in request.path %}active{% endif %} hover:text-accent transition-colors">
+                محصولات
+            </a>
+            <a href="{% url 'about' %}" 
+               class="nav-item {% if '/about' in request.path %}active{% endif %} hover:text-accent transition-colors">
+                درباره ما
+            </a>
+            <a href="{% url 'contact' %}" 
+               class="nav-item {% if '/contact' in request.path %}active{% endif %} hover:text-accent transition-colors">
+                تماس با ما
+            </a>
+        </nav>
+
+        <!-- Header Icons -->
+        <div class="flex items-center space-x-4 md:space-x-6">
+            <!-- User Menu -->
+            {% if user.is_authenticated %}
+            <div class="relative group">
+                <button class="flex items-center gap-2 text-white hover:text-white/80 transition-colors px-2 py-1 rounded-lg hover:bg-white/10">
+                    <i class="fas fa-user-circle text-xl"></i>
+                    <span class="hidden md:inline text-sm">{{ user.username }}</span>
+                    <i class="fas fa-chevron-down text-xs hidden md:inline"></i>
+                </button>
+                <div class="absolute left-0 mt-2 w-48 glass-dark rounded-lg py-2 hidden group-hover:block z-50 border border-white/20 backdrop-blur-xl">
+                    <a href="{% url 'profile' %}" class="block px-4 py-3 text-white hover:bg-white/10 transition-all flex items-center gap-2 text-sm">
+                        <i class="fas fa-user text-sm w-5"></i>
+                        پروفایل
+                    </a>
+                    <a href="{% url 'logout' %}" class="block px-4 py-3 text-white hover:bg-white/10 transition-all flex items-center gap-2 text-sm">
+                        <i class="fas fa-sign-out-alt text-sm w-5"></i>
+                        خروج
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="text-white hover:text-white/80 transition-colors flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10">
+                <i class="fas fa-user"></i>
+                <span class="hidden md:inline text-sm">ورود / ثبت‌نام</span>
+            </a>
+            {% endif %}
+            
+            <!-- Cart Icon -->
+            <a href="{% url 'cart' %}" class="relative group px-2 py-1 rounded-lg hover:bg-white/10 transition-all">
+                <i class="fas fa-shopping-cart text-xl transition-transform group-hover:scale-110"></i>
+                {% if cart_items_count > 0 %}
+                <span class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-badge border-2 border-green-900">
+                    {{ cart_items_count }}
+                </span>
+                {% endif %}
+            </a>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-xl p-2 rounded-lg hover:bg-white/10">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        </div>
+</header>

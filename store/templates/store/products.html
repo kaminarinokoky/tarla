@@ -1,0 +1,234 @@
+{% extends "store/base.html" %}
+{% load humanize %}
+
+{% block title %}محصولات - فروشگاه اینترنتی تارلا ارگانیک{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+    <div class="container mx-auto">
+        <!-- Page Header -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="text-center md:text-right">
+                    <h1 class="text-3xl font-bold text-white mb-2">همه محصولات</h1>
+                    <p class="text-white/70">{{ products|length }} محصول یافت شد</p>
+                </div>
+                
+                <!-- Search Form -->
+                <form method="get" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div class="relative flex-1 min-w-[200px]">
+                        <input type="text" 
+                               name="search" 
+                               value="{{ search_query }}"
+                               placeholder="جستجوی محصول..." 
+                               class="w-full bg-white/10 rounded-lg px-4 py-2 pr-10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 border border-white/20">
+                        <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <select name="category" class="bg-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30 border border-white/20 min-w-[150px]" onchange="this.form.submit()">
+                        <option value="">همه دسته‌بندی‌ها</option>
+                        {% for category in categories %}
+                        <option value="{{ category.name }}" {% if selected_category == category.name %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div class="mt-6 pt-6 border-t border-white/20">
+                <form method="get" class="flex flex-col md:flex-row gap-4 items-start md:items-end">
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                        <div>
+                            <label class="block text-white mb-2 text-sm">حداقل قیمت</label>
+                            <input type="number" 
+                                   name="price_min" 
+                                   value="{{ price_min }}"
+                                   placeholder="0" 
+                                   min="0"
+                                   class="bg-white/10 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-white/30 w-32 border border-white/20">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white mb-2 text-sm">حداکثر قیمت</label>
+                            <input type="number" 
+                                   name="price_max" 
+                                   value="{{ price_max }}"
+                                   placeholder="1000000" 
+                                   min="0"
+                                   class="bg-white/10 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-white/30 w-32 border border-white/20">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button type="submit" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition-all border border-white/20">
+                            اعمال فیلتر
+                        </button>
+                        
+                        {% if request.GET.search or request.GET.category or request.GET.price_min or request.GET.price_max or request.GET.featured %}
+                        <a href="{% url 'products' %}" class="bg-red-500/20 hover:bg-red-500/30 text-red-300 px-4 py-2 rounded-lg text-sm transition-all border border-red-500/20">
+                            حذف فیلترها
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        {% if products %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products %}
+            <div class="glass product-card rounded-2xl p-5 text-white flex flex-col h-full transition-all duration-300">
+                <a href="{% url 'product_detail' product.id %}" class="flex flex-col h-full">
+                    <div class="bg-white/10 rounded-xl h-48 mb-4 flex items-center justify-center overflow-hidden relative">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                             class="h-full w-full object-cover rounded-xl transition-transform duration-300">
+                        {% else %}
+                        <i class="fas fa-leaf text-4xl text-white/50"></i>
+                        {% endif %}
+                        
+                        {% if product.is_featured %}
+                        <span class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                            منتخب
+                        </span>
+                        {% endif %}
+                        
+                        {% if not product.is_available %}
+                        <div class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold bg-red-500/80 px-3 py-1 rounded-lg">ناموجود</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h3 class="font-bold text-lg mb-2 line-clamp-1">{{ product.name }}</h3>
+                    <p class="text-sm text-white/70 mb-4 line-clamp-2 flex-grow">
+                        {{ product.description|default:"محصول ارگانیک با کیفیت عالی" }}
+                    </p>
+                </a>
+                
+                <div class="flex justify-between items-center mt-auto">
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-1">
+                            <span class="font-bold text-xl">{{ product.price|intcomma }}</span>
+                            <span class="text-sm text-white/60">تومان</span>
+                        </div>
+                        {% if product.stock_quantity < 10 and product.stock_quantity > 0 %}
+                        <span class="text-xs text-orange-300 mt-1">فقط {{ product.stock_quantity }} عدد باقی مانده</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if product.is_available and product.stock_quantity > 0 %}
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" 
+                               class="bg-white/20 hover:bg-white/30 text-white py-2 px-4 rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+                            <i class="fas fa-cart-plus"></i>
+                            افزودن
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="bg-gray-500/20 text-gray-300 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed">
+                        ناموجود
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="col-span-full text-center py-16">
+            <div class="glass rounded-2xl p-12 max-w-md mx-auto">
+                <i class="fas fa-search text-6xl text-white/50 mb-4"></i>
+                <h3 class="text-xl font-bold text-white mb-2">محصولی یافت نشد</h3>
+                <p class="text-white/70 mb-6">متأسفانه هیچ محصولی مطابق با جستجوی شما یافت نشد.</p>
+                <a href="{% url 'products' %}" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white py-3 px-6 rounded-full font-semibold transition-all">
+                    <i class="fas fa-undo"></i>
+                    مشاهده همه محصولات
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+        <div class="flex justify-center mt-12">
+            <div class="glass rounded-2xl p-4 flex gap-2">
+                {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                   class="bg-white/10 hover:bg-white/20 text-white h-10 w-10 rounded-lg flex items-center justify-center transition-all">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+                
+                {% for i in products.paginator.page_range %}
+                    {% if products.number == i %}
+                    <span class="bg-white text-green-700 h-10 w-10 rounded-lg flex items-center justify-center font-bold">
+                        {{ i }}
+                    </span>
+                    {% else %}
+                    <a href="?page={{ i }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                       class="bg-white/10 hover:bg-white/20 text-white h-10 w-10 rounded-lg flex items-center justify-center transition-all">
+                        {{ i }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" 
+                   class="bg-white/10 hover:bg-white/20 text-white h-10 w-10 rounded-lg flex items-center justify-center transition-all">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.product-card {
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.product-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+/* Smooth transitions */
+.glass {
+    transition: all 0.3s ease;
+}
+
+/* Better focus states */
+input:focus, select:focus, button:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: rgba(255, 255, 255, 0.3);
+}
+</style>
+{% endblock %}

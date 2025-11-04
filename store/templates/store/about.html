@@ -1,0 +1,58 @@
+{% extends "store/base.html" %}
+
+{% block title %}درباره ما - فروشگاه اینترنتی تارلا ارگانیک{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-12 px-4">
+    <!-- Hero Section -->
+    <div class="glass rounded-2xl p-8 text-white mb-12 text-center">
+        <h1 class="text-4xl font-bold mb-4">درباره تارلا ارگانیک</h1>
+        <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            تارلا با هدف ارائه محصولات طبیعی و ارگانیک با کیفیت بالا تأسیس شده است. 
+            ما بر این باوریم که هر فرد سزاوار دسترسی به محصولات سالم و طبیعی است.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <!-- Mission -->
+        <div class="glass rounded-2xl p-8 text-white">
+            <div class="bg-white/10 rounded-full h-16 w-16 flex items-center justify-center mb-6">
+                <i class="fas fa-bullseye text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">ماموریت ما</h2>
+            <p class="text-white/80 leading-relaxed mb-4">
+                ارائه محصولات ارگانیک و طبیعی با بالاترین استانداردهای کیفیت به مشتریان عزیز. 
+                ما متعهد به حفظ سلامت محیط زیست و حمایت از تولیدکنندگان محلی هستیم.
+            </p>
+            <ul class="space-y-2 text-white/70">
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-400"></i>
+                    تضمین کیفیت و اصالت محصولات
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-400"></i>
+                    حمایت از تولیدکنندگان ایرانی
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-400"></i>
+                    حفظ محیط زیست و توسعه پایدار
+                </li>
+            </ul>
+        </div>
+
+        <!-- Vision -->
+        <div class="glass rounded-2xl p-8 text-white">
+            <div class="bg-white/10 rounded-full h-16 w-16 flex items-center justify-center mb-6">
+                <i class="fas fa-eye text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">چشم‌انداز ما</h2>
+            <p class="text-white/80 leading-relaxed">
+                تبدیل شدن به برترین ارائه‌دهنده محصولات ارگانیک در ایران و گسترش فرهنگ 
+                استفاده از محصولات طبیعی و سالم در بین خانواده‌های ایرانی.
+            </p>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
